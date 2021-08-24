@@ -1,11 +1,15 @@
 const path = require('path')
 const express = require('express')
+const sensor = require("node-dht-sensor").promises;
 const app = express()
-const port = 80
+const port = 8000
 
-app.get('/data', (req, res) => {
+app.get('/data', async (req, res) => {
   // Fetch temperature and humidity from the sensor
-  res.json({ temperature: 21.5, humidity: 68.00 })
+  const data = await sensor.read(22, 4);
+  const temp = data.temperature.toFixed(1);
+  const humid = data.humidity.toFixed(1);
+  res.json({ temperature: temp, humidity: humid })
 })
 
 app.get('/', (req, res) => {
@@ -16,3 +20,4 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })
+
